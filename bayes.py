@@ -30,16 +30,18 @@ class Search():
         self.area_actual = 0
         self.sailor_actual = [0, 0] # As 'local' coords within search area
         
-        self.sa1 = self.img[SA1_CORNERS[1] : SA1_CORNERS[3], SA1_CORNERS[0] : SA1_CORNERS[2]]
+        self.sa1 = self.img[SA1_CORNERS[1] : SA1_CORNERS[3], SA1_CORNERS[0] : SA1_CORNERS[2]] # sa upper y, lower y; then upper x, and lower x (notice how these are y first, then x unlike normal cartesian); same for the next to sa's
         
         self.sa2 = self.img[SA2_CORNERS[1] : SA2_CORNERS[3], SA2_CORNERS[0] : SA2_CORNERS[2]]
         
         self.sa3 = self.img[SA3_CORNERS[1] : SA3_CORNERS[3], SA3_CORNERS[0] : SA3_CORNERS[2]]
         
+        #the following sets the intial probabilities for finding the sailor in eac of the sa's
         self.p1 = 0.2
         self.p2 = 0.5
         self.p3 = 0.3
         
+        #Then set the initial search effectiveness probabilities, SEP
         self.sep1 = 0
         self.sep2 = 0
         self.sep3 = 0
