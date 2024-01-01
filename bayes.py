@@ -71,7 +71,29 @@ class Search():
         cv.moveWindow("Search Area", 750, 10)
         cv.waitKey(500)
         
+    def sailor_final_location(self, num_search_areas):
+        """Return the actual x,y location of the missing sailor."""
+        # Find sailor coordinates with respect to any Search Area subarray. Since they are all the same size, using sa1 is okay
+        self.sailor_actual[0] = np.random.choice(self.sa1.shape[1], 1)
+        self.sailor_actual[1] = np.random.choice(self.sa1.shape[0], 1) 
         
+        area = int(random.triangular(1, num_search_areas + 1))
+
+        if area == 1:
+            x = self.sailor_actual[0] + SA1_CORNERS[0]
+            y = self.sailor_actual[1] + SA1_CORNERS[1]
+            self.area_actual = 1
+        elif area == 2:
+            x = self.sailor_actual[0] + SA1_CORNERS[0]
+            y = self.sailor_actual[1] + SA1_CORNERS[1]
+            self.area_actual = 2
+        elif area == 3:
+            x = self.sailor_actual[0] + SA1_CORNERS[0]
+            y = self.sailor_actual[1] + SA1_CORNERS[1]
+            self.area_actual = 3
+        return x, y
+
+
         
         
         
