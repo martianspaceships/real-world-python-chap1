@@ -74,10 +74,10 @@ class Search():
     def sailor_final_location(self, num_search_areas):
         """Return the actual x,y location of the missing sailor."""
         # Find sailor coordinates with respect to any Search Area subarray. Since they are all the same size, using sa1 is okay
-        self.sailor_actual[0] = np.random.choice(self.sa1.shape[1], 1)
-        self.sailor_actual[1] = np.random.choice(self.sa1.shape[0], 1) 
+        self.sailor_actual[0] = np.random.choice(self.sa1.shape[1], 1) # choose 1 item from the coloumns
+        self.sailor_actual[1] = np.random.choice(self.sa1.shape[0], 1) # choose 1 item from the rows
         
-        area = int(random.triangular(1, num_search_areas + 1))
+        area = int(random.triangular(1, num_search_areas + 1)) # use a local variable here, area, instead of self.area since no other function/method needs it globally
 
         if area == 1:
             x = self.sailor_actual[0] + SA1_CORNERS[0]
@@ -93,14 +93,24 @@ class Search():
             self.area_actual = 3
         return x, y
 
-
+    def calc_search_effectiveness(self):
+        """Set decimal search effectiveness value per search area."""
+        self.sep1 = random.uniform(0.2, 0.9)
+        self.sep2 = random.uniform(0.2, 0.9)
+        self.sep3 = random.uniform(0.2, 0.9)
         
-        
-        
-        
-        
-        
-        
+    def conduct_search(self, area_num, area_array, effectiveness_prob):
+        """Return search results and list of searched coordinates."""
+        local_y_range = range(area_array.shape[0])
+        local_x_range = range(area_array.shape[1])
+        coords = list(itertools.product(local_x_range, local_y_range)) # create a list of all possible combos
+        random.shuffle(coords) # shuffle the list so that the same x,y isn't always searched
+        coords = coords[:int((len(coords)*effectiveness_prob))]
+        loc_actual = (self.sailor_actual[0], self.sailor_actual[1])
+        if area_num ++ self.area_actual and loc_actual in coords: # compare the search area with the coords of the actual sailor's x,y pos
+            return 'Found in Area {}.'.format(area_num), coords
+        else:
+            return 'Not Found', coords
         
         
         
