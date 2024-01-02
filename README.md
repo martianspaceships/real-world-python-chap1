@@ -10,7 +10,7 @@ Interactive Search and Rescue Game
 
 This project is an interactive game to find a lost sailor. A map of Cape Python is used along with three search areas for the user to use in trying to locate the sailor. 
 
-#### Objective
+### Objective
 
 Use Bayes' Rule as a guide to choosing search locations for the missing sailor.
 
