@@ -74,8 +74,8 @@ class Search():
     def sailor_final_location(self, num_search_areas):
         """Return the actual x,y location of the missing sailor."""
         # Find sailor coordinates with respect to any Search Area subarray. Since they are all the same size, using sa1 is okay
-        self.sailor_actual[0] = np.random.choice(self.sa1.shape[1], 1) # choose 1 item from the coloumns
-        self.sailor_actual[1] = np.random.choice(self.sa1.shape[0], 1) # choose 1 item from the rows
+        self.sailor_actual[0] = np.random.choice(self.sa1.shape[1]) # default is to select one choice
+        self.sailor_actual[1] = np.random.choice(self.sa1.shape[0]) # default is to select one choice
         
         area = int(random.triangular(1, num_search_areas + 1)) # use a local variable here, area, instead of self.area since no other function/method needs it globally
 
@@ -84,12 +84,12 @@ class Search():
             y = self.sailor_actual[1] + SA1_CORNERS[1]
             self.area_actual = 1
         elif area == 2:
-            x = self.sailor_actual[0] + SA1_CORNERS[0]
-            y = self.sailor_actual[1] + SA1_CORNERS[1]
+            x = self.sailor_actual[0] + SA2_CORNERS[0]
+            y = self.sailor_actual[1] + SA2_CORNERS[1]
             self.area_actual = 2
         elif area == 3:
-            x = self.sailor_actual[0] + SA1_CORNERS[0]
-            y = self.sailor_actual[1] + SA1_CORNERS[1]
+            x = self.sailor_actual[0] + SA3_CORNERS[0]
+            y = self.sailor_actual[1] + SA3_CORNERS[1]
             self.area_actual = 3
         return x, y
 
@@ -107,7 +107,7 @@ class Search():
         random.shuffle(coords) # shuffle the list so that the same x,y isn't always searched
         coords = coords[:int((len(coords)*effectiveness_prob))]
         loc_actual = (self.sailor_actual[0], self.sailor_actual[1])
-        if area_num ++ self.area_actual and loc_actual in coords: # compare the search area with the coords of the actual sailor's x,y pos
+        if area_num == self.area_actual and loc_actual in coords: # compare the search area with the coords of the actual sailor's x,y pos
             return 'Found in Area {}.'.format(area_num), coords
         else:
             return 'Not Found', coords
@@ -119,23 +119,23 @@ class Search():
         self.p2 = self.p2 * (1 - self.sep2) / denom
         self.p3 = self.p3 * (1 - self.sep3) / denom
     
-    def draw_menu(search_num):
-        """Print menu of choices for conducting area searches."""
-        print('\nSearch {}'.format(search_num))
-        print(
-            """
-            Choose next areas to search:
-            
-            0 - Quit    
-            1 - Search Area 1 twice
-            2 - Search Area 2 twice
-            3 - Search Area 3 twice
-            4 - Search Areas 1 & 2
-            5 - Search Areas 1 & 3
-            6 - Search Areas 2 & 3
-            7 - Start Over
-            """
-            )
+def draw_menu(search_num):
+    """Print menu of choices for conducting area searches."""
+    print('\nSearch {}'.format(search_num))
+    print(
+        """
+        Choose next areas to search:
+        
+        Q - Quit    
+        1 - Search Area 1 twice
+        2 - Search Area 2 twice
+        3 - Search Area 3 twice
+        4 - Search Areas 1 & 2
+        5 - Search Areas 1 & 3
+        6 - Search Areas 2 & 3
+        7 - Start Over
+        """
+        )
 
 def main():
     app = Search('Cape_Python')
@@ -143,8 +143,106 @@ def main():
     sailor_x, sailor_y = app.sailor_final_location(num_search_areas=3)
     print("-" * 65)
     print("\nInitial Target (P), Probabilities:")
-    print("P1 = {:.3f}, P2 = {.3f}, P3 = {:.3f}".format(app.p1, app.p2, app.p3))
+    print("P1 = {:.3f}, P2 = {:.3f}, P3 = {:.3f}".format(app.p1, app.p2, app.p3))
     search_num = 1        
+        
+    while True:
+        app.calc_search_effectiveness()
+        draw_menu(search_num)
+        choice = input("Choice: ")
+        
+        if choice.title() == 'Q': # ME: minor change to use Q instead of '0'
+            cv.waitKey(1000)    
+            cv.destroyWindow('Search Area') # Me: Added this to close the window upon quitting the game :D           
+            sys.exit()
+            
+        elif choice == "1":
+            results_1, coords_1 = app.conduct_search(1, app.sa1, app.sep1)
+            results_2, coords_2 = app.conduct_search(1, app.sa1, app.sep1)
+            app.sep1 = (len(set(coords_1 + coords_2))) / (len(app.sa1)**2)
+            app.sep2 = 0
+            app.sep3 = 0
+        
+        elif choice == "2":
+            results_1, coords_1 = app.conduct_search(2, app.sa2, app.sep2)
+            results_2, coords_2 = app.conduct_search(2, app.sa2, app.sep2)
+            app.sep1 = 0
+            app.sep2 = (len(set(coords_1 + coords_2))) / (len(app.sa2)**2)
+            app.sep3 = 0
+        
+        elif choice == "3":
+            results_1, coords_1 = app.conduct_search(3, app.sa3, app.sep3)
+            results_2, coords_2 = app.conduct_search(3, app.sa3, app.sep3)
+            app.sep1 = 0
+            app.sep2 = 0
+            app.sep3 = (len(set(coords_1 + coords_2))) / (len(app.sa3)**2)
+        
+        elif choice == "4":
+            results_1, coords_1 = app.conduct_search(1, app.sa1, app.sep1)
+            results_2, coords_2 = app.conduct_search(2, app.sa2, app.sep2)
+            app.sep3 = 0
+        
+        elif choice == "5":
+            results_1, coords_1 = app.conduct_search(1, app.sa1, app.sep1)
+            results_2, coords_2 = app.conduct_search(3, app.sa3, app.sep3)
+            app.sep2 = 0
+            
+        elif choice == "6":
+        
+            results_1, coords_1 = app.conduct_search(2, app.sa2, app.sep2)
+            results_2, coords_2 = app.conduct_search(3, app.sa3, app.sep3)
+            app.sep1 = 0
+            
+        elif choice == "7":
+            main()
+            
+        else:
+            print("\nSorry but that isn't a valid choice.", file=sys.stderr)
+            continue
+        
+        app.revise_target_probs() # Use Bayes' rule to update target probs
+    
+        print("\nSearch {} Results 1 = {}".format(search_num, results_1), file=sys.stderr)
+        print("\nSearch {} Results 2 = {}".format(search_num, results_2), file=sys.stderr)
+        print("Search {} Effectiveness (E):".format(search_num))
+        print("E1 = {:.3f}, E2 = {:.3f}, E3 = {:.3f}".format(app.sep1, app.sep2, app.sep3))
+        
+        if results_1 == "Not Found" and results_2 == "Not Found":
+            print('\nNew Target Probabilities (P) for Search {}:'.format(search_num + 1))
+            print('P1 = {:.3f}, P2 = {:.3f}, P3 = {:.3f}'.format(app.p1, app.p2, app.p3))
+        else:
+            cv.circle(app.img, (sailor_x, sailor_y), 3, (255, 0, 0), 1)
+            cv.imshow('Search Area', app.img)
+            cv.waitKey(15000) # wait 20 seconds before starting a new game and removing the "Actual Position" indicator
+            main()
+        search_num += 1
+        
+if __name__=='__main__':
+    main()
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
+        
         
         
         
