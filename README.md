@@ -1,6 +1,6 @@
 ### Date Created
 
-12/28/2023
+12/29/2023
 
 ### Project Title
 
@@ -22,21 +22,21 @@ cape_python.png
 
 ### Code Organization and Functionality
 
-Begin with the game <u>objective</u>: Create a search and rescue game that uses Bayes' rule to inform player choices on how to conduct a search.
+Begin with the **game objective**: Create a search and rescue game that uses Bayes' rule to inform player choices on how to conduct a search.
 
-<u>Code strategy</u>: the program begins with initial target probabilities for the sailor's location and update them based on the search results until the sailor is found or the user has used three unsuccessful attempts to find the sailor.
+**Code strategy**: the program begins with initial target probabilities for the sailor's location and updates them based on the search results until the sailor is found or the user has used three unsuccessful attempts to find the sailor. (Code in book doesn't limit the user to three attempts)
 
 - Import modules, python first and then 3rd party modules
 
-- Define the Search Class
+- Define the 'Search' class
 
 - Draw the search areas and legend on a 'map' which is a pulled in .png image
 
-- Choose the Sailor's Final location using a random number method for the x and y coordinates
+- Choose the sailor's final location using a random number method for the x and y coordinates within a search area
 
 - Calculate search effectiveness of actually finding the sailor in a given search area
 
-- Conduct the search
+- Conduct the search in the chosen search areas (to be defined in two steps when getting user input)
 
 - Revise target probabilities based on the results of a search
 
